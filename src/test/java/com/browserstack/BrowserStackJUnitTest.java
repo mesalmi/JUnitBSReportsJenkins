@@ -1,5 +1,4 @@
 package com.browserstack;
-import com.browserstack.local.Local;
 
 import java.io.File;
 import java.io.FileReader;
@@ -28,8 +27,6 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parallelized.class)
 public class BrowserStackJUnitTest {
     public WebDriver driver;
-    private Local l;
-
     private static JSONObject config;
 
     @Parameter(value = 0)
@@ -85,20 +82,11 @@ public class BrowserStackJUnitTest {
         if(accessKey == null) {
             accessKey = (String) config.get("key");
         }
-
-        if(capabilities.getCapability("browserstack.local") != null && capabilities.getCapability("browserstack.local") == "true"){
-            l = new Local();
-            Map<String, String> options = new HashMap<String, String>();
-            options.put("key", accessKey);
-            l.start(options);
-        }
-
         driver = new RemoteWebDriver(new URL("http://"+username+":"+accessKey+"@"+config.get("server")+"/wd/hub"), capabilities);
     }
 
     @After
     public void tearDown() throws Exception {
         driver.quit();
-        if(l != null) l.stop();
     }
 }
